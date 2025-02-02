@@ -23,12 +23,15 @@ int main()
   cin >> N >> Q;
 
   vector<int> hatoP(N); // 鳩Pがいる巣i
+  vector<int> Home(N);  // 巣iにいる鳩の数
   for (int i = 0; i < N; i++)
   {
     hatoP.at(i) = i;
+    Home.at(i) = 1;
   }
+  int count = 0;
 
-  vector<int> query(Q);
+  vector<int> query(Q); // クエリ
   for (int i = 0; i < Q; i++)
   {
     cin >> query.at(i);
@@ -36,50 +39,30 @@ int main()
     {
       int P, H;
       cin >> P >> H;
-      move_hato(hatoP, P, H);
-    }
-    else if (query.at(i) == 2) // 出力
-    {
-      cout << count_hato(hatoP) << endl;
-    }
-  }
-}
 
-void move_hato(vector<int> &hato, int P, int H)
-{
-  hato.at(P - 1) = H - 1;
-}
+      Home.at(hatoP.at(P - 1))--; // 元いた巣から鳩を移動
+      if (Home.at(hatoP.at(P - 1)) == 1)
+      {
+        count--;
+      }
 
-int count_hato(vector<int> &hato)
-{
-  set<int> H;
-  sort(hato.begin(), hato.end());
-  for (int i = 0; i < hato.size(); i++)
-  {
-    H.insert(hato.at(i));
-  }
-  return hato.size() - H.size();
-}
-/*
-// 重複している巣の個数を数える
-int count_hato(vector<int> &hato)
-{
-  int count = 0;
-  vector<int> H(hato.size());
-  for (int i = 0; i < hato.size(); i++)
-  {
-    H.at(i) = 0;
-  }
-  for (int i = 0; i < hato.size(); i++)
-  {
-    if (H.at(hato.at(i)) < 2)
-    {
-      H.at(hato.at(i))++;
-      if (H.at(hato.at(i)) == 2)
+      hatoP.at(P - 1) = H - 1;
+      Home.at(H - 1)++; // 移動先の巣に鳩を移動
+      if (Home.at(H - 1) == 2)
       {
         count++;
       }
+      /*
+      for (int i = 0; i < N; i++)
+      {
+        cout << Home.at(i) << " ";
+      }
+      cout << endl;
+      */
+    }
+    else if (query.at(i) == 2) // 出力
+    {
+      cout << count << endl;
     }
   }
-  return count;
-}*/
+}
