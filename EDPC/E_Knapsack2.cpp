@@ -3,8 +3,6 @@
 using namespace std;
 
 #define MAX_W 1000000000
-#define MAX_N 100
-#define MAX_V 1000
 
 #define min(p, q) ((p) < (q) ? (p) : (q))
 
@@ -13,7 +11,9 @@ int main()
   // 宣言, 入力
   int N, W;
   cin >> N >> W;
-  vector<int> w(N), v(N);
+  int MAX_V = N * 1000 + 1;
+  vector<long long> w(N);
+  vector<int> v(N);
   for (int i = 0; i < N; i++)
   {
     cin >> w.at(i) >> v.at(i);
@@ -26,13 +26,13 @@ int main()
   */
   // dp[i][val] i-1番目までの品物を価値valとなるように選んだ時の重さの最小値
   // 重さの総和の最小値
-  vector<vector<long long>> dp(N+1, vector<long long>(MAX_V));
+  vector<vector<long long>> dp(N + 1, vector<long long>(MAX_V));
   // 初期化
   for (int i = 0; i < N; i++)
   {
     for (int val = 0; val < MAX_V; val++)
     {
-      dp[i].at(val) = MAX_W;
+      dp[i].at(val) = MAX_W + 1;
     }
   }
   dp[0].at(0) = 0; // 初期条件
@@ -60,7 +60,7 @@ int main()
     if (dp[N].at(val) <= W)
     {
       ans = val;
-      //cout << "value:" << val << " weight:" << dp[N].at(val) << endl;
+      // cout << "value:" << val << " weight:" << dp[N].at(val) << endl;
     }
   }
   cout << ans << endl;
