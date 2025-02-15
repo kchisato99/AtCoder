@@ -2,8 +2,11 @@
 
 using namespace std;
 
+#define max(p, q) ((p) > (q) ? (p) : (q))
+
 int main()
 {
+  // 入力, 宣言
   int N, W; // N個の品物, ナップサックの容量W
   cin >> N >> W;
   vector<int> w(N), v(N); // 品物i の重さw[i], 価値v[i]
@@ -17,30 +20,32 @@ int main()
   ナップサックの容量はW, 総和はW以下でなければならない
   価値の総和の最大値を求める
   */
-  // i個目の品物までのうち価値の総和の最高値 dp[i]
-  vector<int> dp(N);
-  long int sum_max = 0;
-  // for (int i = 0; i < N; i++)
-  //{
-  //  総当たりの裏技
-  for (int bit = 0; bit < (1 << N); bit++)
-  { // i番目まででいくつか選ぶ時の組み合わせ
-    long int sum_w = 0, sum_v = 0;
-    for (int j = 0; j < N; j++)
+  // dp[i][j] i-1個目の品物までで重さがj以下となるように選んだときの価値の総和の最大値
+  vector<vector<long long>> dp(N + 1, vector<long long>(W + 1));
+  // dp[i][j]が求まっている状態でdp[i+1][j]を更新する
+  for (int i = 0; i < N; i++)
+  {
+    for (int j = 0; j <= W; j++)
     {
-      if (bit & (1 << j))
-      {
-        sum_w += w.at(j);
-        sum_v += v.at(j);
+      if (j - w.at(i) >= 0)
+      { // i 番目の品物を選ぶ
+        dp[i + 1].at(j) = max(dp[i].at(j),
+                              dp[i].at(j - w.at(i)) + v.at(i));
       }
-      if (sum_w <= W && sum_v >= sum_max)
-      // if (sum_w <= W && sum_v >= dp.at(j))
-      {
-        sum_max = sum_v;
-        // dp.at(i) = sum_v;
+      else
+      { // i 番目の品物を選ばない
+        dp[i + 1].at(j) = dp[i].at(j);
       }
     }
   }
-  cout << sum_max << endl;
-  //}
+  /*
+  for (int i = 0; i <= N; i++)
+  {
+    for (int j = 0; j <= W; j++)
+    {
+      cout << setw(2) << dp[i].at(j) << " ";
+    }
+    cout << endl;
+  }*/
+  cout << dp[N].at(W) << endl;
 }
