@@ -59,5 +59,6 @@ int main()
     { // 白色のボールをj個選ぶ
       dp[i].at(j) = dp[i].at(j-1) + maxW.at(j);
     }
+    // コミットします
   }
 }
