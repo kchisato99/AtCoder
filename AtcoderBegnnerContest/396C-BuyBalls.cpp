@@ -3,6 +3,7 @@
 using namespace std;
 
 #define min(p, q) ((p) < (q) ? (p) : (q))
+#define max(p, q) ((p) > (q) ? (p) : (q))
 
 int main()
 {
@@ -30,9 +31,9 @@ int main()
   // 価値の最大はBのいくつかとWのいくつかを選ぶことで得られる
 
   // 　黒色のボールの価値の最大値を考える
-  vector<int> sumB(N + 1);     // 0~N個のボールを選んだ場合の価値の総和
-  sumB.at(0) = 0;              // ボールを選ばない場合
-  for (int i = 1; i <= N; i++) // 1個以上のボールを選んだ時
+  vector<long long> sumB(N + 1); // 0~N個のボールを選んだ場合の価値の総和
+  sumB.at(0) = 0;                // ボールを選ばない場合
+  for (int i = 1; i <= N; i++)   // 1個以上のボールを選んだ時
   {
     sumB.at(i) = sumB.at(i - 1) + B.at(i - 1);
   }
@@ -40,28 +41,27 @@ int main()
   // 白色のボールの価値の最大値を考える
   // 黒色のボールの個数は白色のボール以上になる
   // 価値の総和は黒色のボールi個, 白色のボールj(0<=j<=i)個を選んだ時
-  vector<int> sumW(min(M, N) + 1);     // 0~min(N,M)個のボールを選んだ場合の価値の総和
-  sumW.at(0) = 0;                      // ボールを選ばない場合
-  for (int j = 1; j <= min(M, N); j++) // 1個以上のボールを選んだ時
+  vector<long long> maxW(min(M, N) + 1); // 0~min(N,M)個のボールを選んだ場合の価値の総和
+  maxW.at(0) = 0;                        // ボールを選ばない場合
+  for (int j = 1; j <= min(M, N); j++)   // 1個以上のボールを選んだ時
   {
     if (W.at(j - 1) > 0)
     {
-      sumW.at(j) = sumW.at(j - 1) + W.at(j - 1);
+      maxW.at(j) = maxW.at(j - 1) + W.at(j - 1);
     }
     else
     {
-      sumW.at(j) = sumW.at(j - 1);
+      maxW.at(j) = maxW.at(j - 1);
     }
   }
 
   // 　黒色と白色のボールをいくつか選んだ時の価値の総和の最大値を求める
-  int sumMax = 0;
+  long long sumMax = 0;
   for (int i = 0; i <= N; i++)
   {
-    if (sumMax < sumB.at(i) + sumW.at(min(i, M)))
-      sumMax = sumB.at(i) + sumW.at(min(i, M));
+    // if (sumMax < sumB.at(i) + maxW.at(min(i, M)))
+    sumMax = max(sumMax, sumB.at(i) + maxW.at(min(i, M)));
   }
 
-  
   cout << sumMax << endl;
 }
