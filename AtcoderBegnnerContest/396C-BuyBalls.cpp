@@ -27,43 +27,41 @@ int main()
   // 黒ボールと白ボールを価値の降順にソート
   sort(B.begin(), B.end(), greater<>());
   sort(W.begin(), W.end(), greater<>());
-  // 白色のボールをi個選んだ時の最大価値をあらかじめ計算しておく
-  vector<int> maxW(M + 1); // maxW[i]: 白色のボールをi個選んだ時の最大価値
-  maxW.at(0) = 0;
-  for (int i = 1; i <= M; i++)
+  // 価値の最大はBのいくつかとWのいくつかを選ぶことで得られる
+
+  // 　黒色のボールの価値の最大値を考える
+  vector<int> sumB(N + 1);     // 0~N個のボールを選んだ場合の価値の総和
+  sumB.at(0) = 0;              // ボールを選ばない場合
+  for (int i = 1; i <= N; i++) // 1個以上のボールを選んだ時
   {
-    if (W.at(i - 1) > 0)
+    sumB.at(i) = sumB.at(i - 1) + B.at(i - 1);
+  }
+
+  // 白色のボールの価値の最大値を考える
+  // 黒色のボールの個数は白色のボール以上になる
+  // 価値の総和は黒色のボールi個, 白色のボールj(0<=j<=i)個を選んだ時
+  vector<int> sumW(min(M, N) + 1);     // 0~min(N,M)個のボールを選んだ場合の価値の総和
+  sumW.at(0) = 0;                      // ボールを選ばない場合
+  for (int j = 1; j <= min(M, N); j++) // 1個以上のボールを選んだ時
+  {
+    if (W.at(j - 1) > 0)
     {
-      maxW.at(i) = maxW.at(i - 1) + W.at(i - 1);
+      sumW.at(j) = sumW.at(j - 1) + W.at(j - 1);
     }
     else
     {
-      M = i - 1;
-      break;
+      sumW.at(j) = sumW.at(j - 1);
     }
-  }
-  /*
-  MaxW[i]:白色のボールをi個選んだときの最大値
-  M:白色のボールの価値が最大の時の個数, iの最大値
-  */
-  // 黒色のボールをi個, 白色のボールをj個選んだ時の最大価値
-  vector<vector<int>> dp(N + 1, vector<int>(2));
-  dp[0].at(0) = 0; // 黒色のボールを0個選んだ時の最大価値
-  dp[0].at(1) = 0; // 白色のボールを0個選んだ時の最大価値
-  for (int i = 1; i <= N; i++)
-  { // 黒色のボールをi個選ぶ
-    // 黒色のボールをi個, 白色のボールを0個選んだ時の最大価値
-    dp[i].at(0) = dp[i - 1].at(0) + B.at(i - 1);
-    // 黒色のボールをi個, 白色のボールをj個選んだ時の最大価値
-    dp[i].at(1) = dp[i].at(0) + maxW.at(min(i, M));
   }
 
+  // 　黒色と白色のボールをいくつか選んだ時の価値の総和の最大値を求める
+  int sumMax = 0;
   for (int i = 0; i <= N; i++)
   {
-    if (dp[0].at(1) < dp[i].at(1))
-    {
-      dp[0].at(1) = dp[i].at(1);
-    }
+    if (sumMax < sumB.at(i) + sumW.at(min(i, M)))
+      sumMax = sumB.at(i) + sumW.at(min(i, M));
   }
-  cout << dp[0].at(1) << endl;
+
+  
+  cout << sumMax << endl;
 }
