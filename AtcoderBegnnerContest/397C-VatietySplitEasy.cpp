@@ -24,20 +24,27 @@ int main()
   for (int i = 1; i < N; i++)
   { // i番目で分割
     Bi.insert(A.at(i - 1));
-    dp[i-1][0] = Bi.size();
-    Afi.clear();
+    dp[i - 1][0] = Bi.size();
+    /*Afi.clear();
     for (int j = i; j < N; j++)
     {
       Afi.insert(A.at(j));
     }
+    dp[i-1][1] = Afi.size();*/
+    // dp[i][2] = max(dp[i][0], dp[i][1]);
+    //cout << "test Bi:" << Bi.size() << endl;
+  }
+  for(int i = N-1; i > 0; --i)
+  {
+    Afi.insert(A.at(i));
     dp[i-1][1] = Afi.size();
-    //dp[i][2] = max(dp[i][0], dp[i][1]);
-    //cout << "test :" << Bi.size() << " " << Afi.size() << endl;
+    //cout << "test Afi:" << Afi.size() << endl;
   }
 
   int ans = 0;
   for (int i = 0; i < N - 1; i++)
   {
+    //cout << "test :dp " << dp[i][0] << " " << dp[i][1] << endl;
     ans = max(ans, dp[i][1] + dp[i][0]);
   }
   cout << ans << endl;
