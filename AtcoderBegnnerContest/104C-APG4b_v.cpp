@@ -1,95 +1,59 @@
 #include <bits/stdc++.h>
-
 using namespace std;
-
-#define pimax 100
-#define Dmax 10
 
 int main()
 {
-  int D, G; // 1<=D<=10, 100<=G
-  int p[Dmax], c[Dmax];
+  int d, g;
+  // 問題の大問数d, 目標の点数g
+  cin >> d >> g;
 
-  cin >> D >> G;
-  rep(i, 0 , D) {
+  vector<int> p(d), c(d);
+  // p[i]: i番目の大問の問題数, c[i]: i番目の大問のボーナス点
+  for (int i = 0; i < d; i++)
+  {
     cin >> p[i] >> c[i];
   }
-  
-  // bit全検索
-  //if(bit &(1 << i)) はbitのi番目のフラグが立っているかどうかを判定する
-  // << 左シフト演算　
-  rep(i, 0 , D) {
-    rep(j, 0, p[i]) {
 
-    }
-  }
-}
-  /*
-  総合スコアをG点以上にするために必要な最小の問題数を求める
-  100i点をつけられた問題がp[i]問
-  基本スコア:問題の配点の合計
-  完答ボーナス:100i点をつけられたp[i]問を全て解いた場合
-    に得られるc[i]点のボーナス
-  
-  // 入力
-  //  c[i], G はすべて100の倍数
-  int D, G; // 1<=D<=10, 100<=G
-  cin >> D >> G;
-  vector<int> p(D + 1), c(D + 1);
-  p.at(0) = pimax + 1; // 最小の完答ボーナスの問題数
-  c.at(0) = 0;
-  for (int i = 1; i <= D; i++)
-  {
-    cin >> p.at(i) >> c.at(i);
-    if (100 * p.at(i) + c.at(i) >= G && p.at(i) < p.at(0))
-    // 完答ボーナスで解決できる かつ 問題数が最小のとき
-    {
-      p.at(0) = p.at(i); // 最小の問題数を更新
-    }
-    cout << "p.at(0):" << p.at(0) << endl;
-  }
-
-  if (p.at(0) <= pimax) // 完答ボーナスで解決できるとき, さらに安く済むか検討
-  {
-    if (p.at(D) > p.at(0)) // 単品より完答ボーナスで先に解決できる
-    {
-      cout << p.at(0) << endl; // 出力: 完答ボーナスで解決
-      return 0;
-    }
-    else if (p.at(D) < p.at(0)) // 単品のほうが安い可能性がある
-    {
-      for (int i = 1; i < p.at(0); i++)
-      {
-        if (100 * i * D >= G)
-        { // 100D点をi問解いたときにG点以上になる
-          cout << i << endl;
-          return 0;
-        }
+  int res =  1 << 29; // 最小の解答数を求めるための変数
+  for (int bit = 0; bit < (1 << d); bit++)
+  {              // 全ての大問の解き方をbitで表現
+    int sum = 0; // 合計点
+    int num = 0; // 解いた大問の数
+    for (int i = 0; i < d; i++)
+    { // i番目の大問を解くかどうか
+      if (bit & (1 << i))
+      { // i番目の大問を解く場合
+        sum += c[i] + p[i] * 100 * (i + 1);
+        // 解いた大問のボーナス点と問題数から得られる点数を加算
+        num += p[i];
       }
-      cout << p.at(0) << endl; // 出力: 完答ボーナスで解決
-      return 0;
     }
-  }
-  else if (p.at(0) > pimax) // 完答ボーナスで解決できないとき
-  {
-    int ex_min = D;
-    int sum = 0;
-    // 完答ボーナス + 単品で解決しなければならない
-    for (int i = 1; i < D; i++)
-    {
-      sum = 100 * i * p.at(i) + c.at(i); // p[i]問を全て解いたときのスコア
-      for (int j = 0; j < p.at(D); j++)
+    if (sum >= g)
+    { // 目標点数gを超えた場合
+      res = min(res, num);
+      // 最小の解答数を更新
+    }
+    else
+    { // 目標点数gを超えない場合
+      for (int i = d - 1; i >= 0; --i)
       {
-        if (sum + (100 * j * p.at(D)) >= G && i + j < p.at(0) + ex_min)
-        // 完答ボーナス + 単品で解決できる かつ 問題数が最小のとき
+        if (bit & (1 << i))
+        { // i番目の大問は既に解いた場合
+          continue;
+        }
+        for (int j = 0; j < p[i]; j++)
         {
-          // 最小問題数の更新
-          p.at(0) = p.at(i); // 最小問題数のとき, 完答ボーナスに必要な問題数
-          ex_min = j;  // 最小問題数のとき, 必要な単品の問題数
+          if (sum >= g)
+          { // 目標点数gを超えた場合
+            break;
+          }
+          sum += 100 * (i + 1); // i番目の大問の問題を1つ解く
+          num++;                // 解答数を1増やす
         }
       }
+      res = min(res, num);
+      // 最小の解答数を更新
     }
-    cout << p.at(0) << "+" << ex_min << "=" << p.at(0) + ex_min << endl;
   }
-  return 0;
-}*/
+  cout << res << endl; // 最小の解答数を出力
+}
