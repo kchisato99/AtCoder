@@ -11,33 +11,27 @@ int main()
   {
     cout << A + B << endl;
   }
-  else if (op == "-")
+  if (op == "-")
   {
     cout << A - B << endl;
   }
-  else if (op == "*")
+  if (op == "*")
   {
     cout << A * B << endl;
   }
-  else if (op == "/")
+  if (op == "/")
   {
-    if(B == 0) {
+    if (B == 0)
+    {
       cout << "error" << endl;
-    }else {
-    cout << A / B << endl;
+    }
+    else
+    {
+      cout << A / B << endl;
     }
   }
-  else if (op == "?")
+  if (op == "?" || op == "=" || op == "!")
   {
     cout << "error" << endl;
   }
-  else if (op == "=")
-  {
-    cout << "error" << endl;
-  }
-  else if (op == "!")
-  {
-    cout << "error" << endl;
-  }
-  // ここにプログラムを追記
 }

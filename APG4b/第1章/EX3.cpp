@@ -2,8 +2,6 @@
 using namespace std;
 
 int main() {
-  int N, A;
-  cin >> N >> A;
-  cout << (N*N) - A << endl;
-  
+  int sum = 100 * (100 + 1) / 2;
+  cout << sum << endl;
 }
